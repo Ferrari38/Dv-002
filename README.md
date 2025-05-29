@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>สรุปรายได้ประจำวัน</title>
+  <title>สรุปรายได้ประจำวัน💰</title>
   <style>
     body {
       font-family: sans-serif;
@@ -38,6 +38,7 @@
     <label>วันที่:</label>
     <input type="date" id="date" />
 
+    <h2>📥 รายรับ</h2>
     <label>รายได้จาก GRAB (บาท):</label>
     <input type="number" id="grab" />
 
@@ -46,29 +47,35 @@
 
     <label>ทิป (บาท):</label>
     <input type="number" id="tip" />
-    
+
+    <h2>📤 รายจ่าย</h2>
     <label>ค่าน้ำมัน (บาท):</label>
     <input type="number" id="electricity" />
 
     <label>รายจ่ายอื่นๆ (บาท):</label>
     <input type="number" id="otherExpense" />
 
-    <label>ระยะทางที่ใช้ (กม.):</label>
-    <input type="number" id="distance" />
+    <h2>🛻 เลขไมล์รถ</h2>
+    <label>เริ่มงาน (กม.):</label>
+    <input type="number" id="distanceStart" />
 
+    <label>เลิกงาน (กม.):</label>
+    <input type="number" id="distanceEnd" />
+    
     <button onclick="calculate()">คำนวณ</button>
 
     <div class="result" id="result"></div>
   </div>
 
-  <script>
+  <script>n
     function calculate() {
       const date = document.getElementById('date').value;
       const grab = parseFloat(document.getElementById('grab').value) || 0;
       const boltOriginal = parseFloat(document.getElementById('bolt').value) || 0;
       const electricity = parseFloat(document.getElementById('electricity').value) || 0;
       const other = parseFloat(document.getElementById('otherExpense').value) || 0;
-      const distance = parseFloat(document.getElementById('distance').value) || 0;
+      const distanceStart = parseFloat(document.getElementById('distanceStart').value) || 0;
+      const distanceEnd = parseFloat(document.getElementById('distanceEnd').value) || 0;
       const tip = parseFloat(document.getElementById('tip').value) || 0;
 
       const boltAfterCommission = boltOriginal * 0.82; // หัก 18%
@@ -77,7 +84,8 @@
       const totalExpense = maintenance + electricity + other;
       const netIncome = totalIncome - totalExpense + tip;
       const costPerKm = distance > 0 ? (netIncome / distance).toFixed(2) : 0;
-
+      const netIncomekeep netIncome + maintenance;
+    
       const resultHTML = `
         <strong>สรุปผลวันที่: ${date}</strong><br><br>
         รายได้ GRAB: ${grab.toFixed(2)} บาท<br>
@@ -88,6 +96,7 @@
         รายจ่ายอื่น ๆ: ${other.toFixed(2)} บาท<br>
         ทิป: ${tip.toFixed(2)} บาท<br>
         รายได้สุทธิ (หลังหักค่าใช้จ่าย + บวกทิป): ${netIncome.toFixed(2)} บาท<br><br>
+        รวมค่าซ่อม (รายได้สุทธิ + ค่าซ่อม):${netIncomekeep.toFixed(2)} บาท<br>
         ระยะทางที่ใช้: ${distance} กม.<br>
         บาทต่อกิโลเมตร: ${costPerKm} บาท/กม.
       `;
