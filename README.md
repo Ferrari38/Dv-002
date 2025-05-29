@@ -97,3 +97,118 @@
   </script>
 </body>
 </html>
+
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>คำนวณรายรับ-รายจ่าย (เวอร์ชันเต็ม)</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+    input {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 8px;
+    }
+    button {
+      padding: 10px 15px;
+      margin: 5px 5px 5px 0;
+    }
+    .result {
+      margin-top: 20px;
+      background-color: #f9f9f9;
+      padding: 15px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>เครื่องคำนวณรายรับ-รายจ่าย</h1>
+  <h2>📥 รายรับ</h2>
+  <input id="grab" type="number" placeholder="รายรับจาก GRAB">
+  <input id="bolt" type="number" placeholder="รายรับจาก BOLT">
+  <input id="indriver" type="number" placeholder="รายรับจาก INDRIVER">
+  <input id="maxim" type="number" placeholder="รายรับจาก MAXIM">
+  <input id="lineman" type="number" placeholder="รายรับจาก LINEMAN">
+  <input id="outside" type="number" placeholder="รายรับจากงานนอก">
+
+  <h2>📤 รายจ่าย</h2>
+  <input id="electricity" type="number" placeholder="ค่าไฟ">
+  <input id="expense" type="number" placeholder="ค่าใช้จ่ายอื่น ๆ">
+
+  <h2>🛻 เลขไมล์รถ</h2>
+  <input id="start_day" type="number" placeholder="เริ่มงานกะเช้า">
+  <input id="end_day" type="number" placeholder="จบงานกะเช้า">
+
+  <h3>หรือ ขับกะกลางคืน (ข้ามวัน)</h3>
+  <input id="night_00" type="number" placeholder="เมื่อวาน 0.00น.">
+  <input id="night_end" type="number" placeholder="จบงานเมื่อวานตอนเช้า">
+  <input id="night_start" type="number" placeholder="เริ่มงานเมื่อวานตอนเย็น">
+  <input id="today_00" type="number" placeholder="เมื่อวาน 24.00น./วันนี้ 0.00น.">
+
+  <div style="margin-top:20px;">
+    <button onclick="calculate()">คำนวณ</button>
+    <button onclick="resetForm()">รีเซ็ต</button>
+    <button onclick="saveImage()">บันทึกรูปภาพ</button>
+  </div>
+
+  <div class="result" id="result"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    function calculate() {
+      const income = ["grab", "bolt", "indriver", "maxim", "lineman", "outside"]
+        .map(id => parseFloat(document.getElementById(id).value) || 0)
+        .reduce((a, b) => a + b, 0);
+
+      const expenses = ["electricity", "expense"]
+        .map(id => parseFloat(document.getElementById(id).value) || 0)
+        .reduce((a, b) => a + b, 0);
+
+      let distance = 0;
+      const startDay = parseFloat(document.getElementById('start_day').value);
+      const endDay = parseFloat(document.getElementById('end_day').value);
+
+      if (!isNaN(startDay) && !isNaN(endDay)) {
+        distance = endDay - startDay;
+      } else {
+        const night00 = parseFloat(document.getElementById('night_00').value) || 0;
+        const nightEnd = parseFloat(document.getElementById('night_end').value) || 0;
+        const nightStart = parseFloat(document.getElementById('night_start').value) || 0;
+        const today00 = parseFloat(document.getElementById('today_00').value) || 0;
+        distance = (nightEnd - night00) + (today00 - nightStart);
+      }
+
+      const netIncome = income - expenses;
+      const costPerKm = distance > 0 ? (expenses / distance).toFixed(2) : '0';
+
+      document.getElementById('result').innerHTML = `
+        <strong>รวมยอดที่ต้องโอน:</strong> ${netIncome.toFixed(2)} บาท<br>
+        <strong>ระยะทางที่ใช้:</strong> ${distance.toFixed(2)} กม.<br>
+        <strong>บาทต่อกิโลเมตร:</strong> ${costPerKm} บาท/km
+      `;
+    }
+
+    function resetForm() {
+      document.querySelectorAll('input').forEach(input => input.value = '');
+      document.getElementById('result').innerHTML = '';
+    }
+
+    function saveImage() {
+      html2canvas(document.body).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'result.png';
+        link.href = canvas.toDataURL();
+        link.click();
+      });
+    }
+  </script>
+</body>
+</html>
