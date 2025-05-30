@@ -1,5 +1,4 @@
-<head>
-  <title>คำนวณรายได้ประจำวัน</title>
+<title>คำนวณรายได้ประจำวัน</title>
   <style>
     header {
   display: none;
